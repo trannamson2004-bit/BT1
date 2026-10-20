@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bài 2 — Form đăng ký người dùng | Đề thi Web</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .form-wrap { max-width: 520px; margin: 0 auto; }
+    .strength-bar { display: flex; gap: 4px; margin-top: 6px; }
+    .strength-bar span { flex: 1; height: 5px; border-radius: 3px; background: var(--border); transition: background .2s; }
+    .user-list { margin-top: 1.5rem; }
+    .user-item { display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 0.9rem; border: 1px solid var(--border); border-radius: 10px; margin-bottom: 0.5rem; font-size: 0.9rem; background: var(--bg); }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a href="index.html" class="brand">
+        <span class="logo-dot">W</span>
+        <span>701-MSSV<small>Đề thi Kết thúc HP — Lập trình Web</small></span>
+      </a>
+      <button class="nav-toggle" aria-label="Mở menu" aria-expanded="false">&#9776;</button>
+      <nav class="main-nav">
+        <a href="index.html">Trang chủ</a>
+        <a href="lythuyet.html">Lý thuyết</a>
+        <a href="baitap01.html">Bài 1 — Sản phẩm</a>
+        <a href="baitap02.html">Bài 2 — Form ĐK</a>
+        <a href="baitap03.html">Bài 3 — Countdown</a>
+        <a href="baitap22.html">Bài tập 22</a>
+        <a href="baitap23.html">Bài tập 23</a>
+        <a href="diemdanh.html">Điểm danh</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Liên hệ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="page-hero">
+      <span class="eyebrow">Bài tập thực hành 2 — 20 điểm</span>
+      <h1>Form đăng ký người dùng</h1>
+      <p>Validate tên, email, mật khẩu (tối thiểu 8 ký tự, có chữ hoa, chữ thường và số) và checkbox đồng ý điều khoản. Dữ liệu hợp lệ được lưu vào LocalStorage.</p>
+    </section>
+
+    <div class="card form-wrap">
+      <form id="registerForm" novalidate>
+        <div class="form-group">
+          <label for="fullname">Họ và tên <span style="color:var(--danger)">*</span></label>
+          <input type="text" id="fullname" class="form-control" placeholder="Nguyễn Văn A" autocomplete="name" />
+          <div class="error-msg" data-error="fullname"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email <span style="color:var(--danger)">*</span></label>
+          <input type="email" id="email" class="form-control" placeholder="you@example.com" autocomplete="email" />
+          <div class="error-msg" data-error="email"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Mật khẩu <span style="color:var(--danger)">*</span></label>
+          <input type="password" id="password" class="form-control" placeholder="Tối thiểu 8 ký tự, có hoa, thường, số" autocomplete="new-password" />
+          <div class="strength-bar" aria-hidden="true">
+            <span id="s1"></span><span id="s2"></span><span id="s3"></span><span id="s4"></span>
+          </div>
+          <div class="error-msg" data-error="password"></div>
+        </div>
+
+        <div class="form-group">
+          <div class="checkbox-row">
+            <input type="checkbox" id="agree" />
+            <label for="agree" style="font-weight:400;font-size:0.9rem;">Tôi đồng ý với <a href="#">Điều khoản sử dụng</a> và <a href="#">Chính sách bảo mật</a> <span style="color:var(--danger)">*</span></label>
+          </div>
+          <div class="error-msg" data-error="agree"></div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width:100%;">Đăng ký</button>
+        <div id="formMessage"></div>
+      </form>
+
+      <div class="user-list">
+        <h3 style="font-size:1rem;margin-bottom:0.75rem;">Danh sách tài khoản đã đăng ký (đọc từ LocalStorage):</h3>
+        <div id="userList"></div>
+      </div>
+    </div>
+
+    <section class="card mt-3">
+      <h2 style="font-size:1.15rem;margin-bottom:0.75rem;color:var(--accent);">Giải thích logic tư duy lập trình</h2>
+      <ol style="margin-left:1.3rem;font-size:0.93rem;line-height:1.8;">
+        <li><strong>Xử lý sự kiện submit:</strong> Dùng <code>e.preventDefault()</code> để chặn form tải lại trang, sau đó validate từng trường. Mỗi trường có một vùng hiển thị lỗi riêng; lỗi chỉ xóa khi người dùng sửa lại (sự kiện <code>input</code>).</li>
+        <li><strong>Quy tắc validate:</strong> Email dùng regex <code>/^[^\s@]+@[^\s@]+\.[^\s@]+$/</code>; mật khẩu dùng regex <code>/(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}/</code> (bắt buộc có chữ thường, hoa, số, ≥8 ký tự). Có thanh đo độ mạnh mật khẩu thời gian thực.</li>
+        <li><strong>Bảo mật dữ liệu cục bộ:</strong> LocalStorage dễ bị đọc qua XSS nên <strong>không lưu mật khẩu dạng plaintext</strong>. Trong bài này mật khẩu được lưu dạng băm đơn giản (minh họa); trên production phải hash bằng SHA-256/Argon2 <em>ở phía server</em>, và dùng HttpOnly Cookie cho phiên đăng nhập. Cũng nên đặt cờ <code>Content-Security-Policy</code> khi deploy.</li>
+        <li><strong>Responsive:</strong> Form có <code>max-width</code> và dùng <code>width:100%</code> trên input/nút nên tự co trên mobile; padding/line-height đủ lớn để chạm ngón tay.</li>
+      </ol>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p><strong>701-MSSV</strong> — Bài 2: Form đăng ký + validate + LocalStorage</p>
+  </footer>
+
+  <script src="js/script.js"></script>
+  <script>
+  (function () {
+    "use strict";
+
+    var form = document.getElementById("registerForm");
+    var fields = {
+      fullname: document.getElementById("fullname"),
+      email: document.getElementById("email"),
+      password: document.getElementById("password"),
+      agree: document.getElementById("agree")
+    };
+    var messageBox = document.getElementById("formMessage");
+    var userListEl = document.getElementById("userList");
+    var STORAGE_KEY = "ltw_registered_users";
+
+    /* ---------- Hàm băm đơn giản (minh họa — KHÔNG dùng trong production) ---------- */
+    function simpleHash(str) {
+      var h = 0;
+      for (var i = 0; i < str.length; i++) {
+        h = ((h << 5) - h + str.charCodeAt(i)) | 0;
+      }
+      return "h$" + Math.abs(h).toString(36) + "$" + btoa(unescape(encodeURIComponent(str.slice(0, 2))));
+    }
+
+    /* ---------- Validate từng trường ---------- */
+    function setError(name, msg) {
+      var errEl = document.querySelector('[data-error="' + name + '"]');
+      var input = fields[name];
+      if (errEl) errEl.textContent = msg || "";
+      if (input && input.classList) {
+        input.classList.toggle("invalid", !!msg);
+      }
+    }
+
+    function validateField(name, value) {
+      switch (name) {
+        case "fullname":
+          if (!value || value.trim().length < 2) return "Họ tên phải có ít nhất 2 ký tự.";
+          return "";
+        case "email":
+          var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!value) return "Vui lòng nhập email.";
+          if (!re.test(value)) return "Email không hợp lệ (vd: you@example.com).";
+          return "";
+        case "password":
+          if (!value) return "Vui lòng nhập mật khẩu.";
+          if (value.length < 8) return "Mật khẩu phải có ít nhất 8 ký tự.";
+          if (!/[a-z]/.test(value)) return "Mật khẩu phải chứa ít nhất 1 chữ thường.";
+          if (!/[A-Z]/.test(value)) return "Mật khẩu phải chứa ít nhất 1 chữ hoa.";
+          if (!/\d/.test(value)) return "Mật khẩu phải chứa ít nhất 1 chữ số.";
+          return "";
+        case "agree":
+          if (!fields.agree.checked) return "Bạn phải đồng ý điều khoản để tiếp tục.";
+          return "";
+      }
+      return "";
+    }
+
+    /* ---------- Thanh đo độ mạnh mật khẩu ---------- */
+    var bars = [document.getElementById("s1"), document.getElementById("s2"), document.getElementById("s3"), document.getElementById("s4")];
+    fields.password.addEventListener("input", function () {
+      var v = this.value;
+      var score = 0;
+      if (v.length >= 8) score++;
+      if (/[a-z]/.test(v) && /[A-Z]/.test(v)) score++;
+      if (/\d/.test(v)) score++;
+      if (/[^A-Za-z0-9]/.test(v) || v.length >= 12) score++;
+      var colors = ["#dc2626", "#d97706", "#eab308", "#297a2e"];
+      bars.forEach(function (b, i) {
+        b.style.background = i < score ? colors[score - 1] : "";
+      });
+      // Xóa lỗi khi người dùng gõ lại
+      if (validateField("password", v) === "") setError("password", "");
+    });
+
+    // Xóa lỗi khi sửa các trường khác
+    ["fullname", "email"].forEach(function (n) {
+      fields[n].addEventListener("input", function () {
+        if (validateField(n, this.value) === "") setError(n, "");
+      });
+    });
+    fields.agree.addEventListener("change", function () {
+      if (this.checked) setError("agree", "");
+    });
+
+    /* ---------- Lưu / đọc LocalStorage ---------- */
+    function getUsers() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+      } catch (e) { return []; }
+    }
+    function saveUser(user) {
+      var users = getUsers();
+      users.push(user);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
+    }
+    function renderUsers() {
+      var users = getUsers();
+      userListEl.innerHTML = "";
+      if (users.length === 0) {
+        userListEl.innerHTML = '<p class="muted" style="font-size:0.88rem;">Chưa có tài khoản nào.</p>';
+        return;
+      }
+      users.forEach(function (u) {
+        var div = document.createElement("div");
+        div.className = "user-item";
+        var left = document.createElement("span");
+        left.innerHTML = "<strong>" + window.escapeHTML(u.fullname) + "</strong> — " + window.escapeHTML(u.email);
+        var right = document.createElement("span");
+        right.className = "muted";
+        right.style.fontSize = "0.78rem";
+        right.textContent = u.createdAt;
+        div.appendChild(left);
+        div.appendChild(right);
+        userListEl.appendChild(div);
+      });
+    }
+
+    /* ---------- Xử lý submit ---------- */
+    form.addEventListener("submit", function (e) {
+      e.preventDefault(); // chặn tải lại trang
+      messageBox.innerHTML = "";
+
+      var hasError = false;
+      Object.keys(fields).forEach(function (name) {
+        var val = name === "agree" ? fields.agree.checked : fields[name].value;
+        var err = validateField(name, val);
+        setError(name, err);
+        if (err) hasError = true;
+      });
+
+      if (hasError) {
+        messageBox.innerHTML = '<div class="alert alert-error">Vui lòng sửa các lỗi ở trên rồi thử lại.</div>';
+        return;
+      }
+
+      // Lưu vào LocalStorage (mật khẩu không lưu plaintext)
+      var user = {
+        fullname: fields.fullname.value.trim(),
+        email: fields.email.value.trim().toLowerCase(),
+        passwordHash: simpleHash(fields.password.value),
+        createdAt: new Date().toLocaleString("vi-VN")
+      };
+      saveUser(user);
+      renderUsers();
+
+      messageBox.innerHTML = '<div class="alert alert-success">Đăng ký thành công! Chào mừng ' + window.escapeHTML(user.fullname) + '. Dữ liệu đã được lưu vào LocalStorage.</div>';
+      window.showToast("Đăng ký thành công!", "success");
+      form.reset();
+      bars.forEach(function (b) { b.style.background = ""; });
+    });
+
+    renderUsers();
+  })();
+  </script>
+</body>
+</html>

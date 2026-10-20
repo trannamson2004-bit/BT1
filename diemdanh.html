@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thông tin Điểm danh | Đề thi Web</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a href="index.html" class="brand">
+        <span class="logo-dot">W</span>
+        <span>701-MSSV<small>Đề thi Kết thúc HP — Lập trình Web</small></span>
+      </a>
+      <button class="nav-toggle" aria-label="Mở menu" aria-expanded="false">&#9776;</button>
+      <nav class="main-nav">
+        <a href="index.html">Trang chủ</a>
+        <a href="lythuyet.html">Lý thuyết</a>
+        <a href="baitap01.html">Bài 1 — Sản phẩm</a>
+        <a href="baitap02.html">Bài 2 — Form ĐK</a>
+        <a href="baitap03.html">Bài 3 — Countdown</a>
+        <a href="baitap22.html">Bài tập 22</a>
+        <a href="baitap23.html">Bài tập 23</a>
+        <a href="diemdanh.html">Điểm danh</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Liên hệ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="page-hero">
+      <span class="eyebrow">Trang điểm danh</span>
+      <h1>Thông tin Điểm danh sinh viên</h1>
+      <p>Thông tin cá nhân và link Deploy của bài “Đề thi Kết thúc học phần Lập trình Web”.</p>
+    </section>
+
+    <div class="card">
+      <div class="profile-card">
+        <img src="images/avatar.jpg" alt="Ảnh đại diện sinh viên" class="avatar-img" />
+        <div style="flex:1;min-width:240px;">
+          <h2 style="font-size:1.4rem;margin-bottom:0.25rem;">[Họ và tên sinh viên]</h2>
+          <p class="muted" style="margin-bottom:0.5rem;">Sinh viên ngành Công nghệ Thông tin</p>
+          <span class="badge">MSSV: [Nhập MSSV của bạn]</span>
+        </div>
+      </div>
+
+      <table class="info-table">
+        <tr><th>Họ và tên</th><td>[Nhập họ tên đầy đủ]</td></tr>
+        <tr><th>Mã sinh viên (MSSV)</th><td>[Nhập MSSV — dùng để đổi tên thư mục 701-MSSV]</td></tr>
+        <tr><th>Lớp</th><td>[Nhập lớp học phần, ví dụ: 701.M21]</td></tr>
+        <tr><th>Học phần</th><td>Lập trình Web (LTW)</td></tr>
+        <tr><th>Bài nộp</th><td>Bài tập 24 — Đề thi Kết thúc HP, Đề số 1</td></tr>
+        <tr><th>Thời gian nộp</th><td>[Nhập ngày nộp, ví dụ: 20/10/2026]</td></tr>
+        <tr>
+          <th>URL Deploy (bài thi)</th>
+          <td>
+            <a href="https://your-username.github.io/701-MSSV/" target="_blank" rel="noopener">
+              https://your-username.github.io/701-MSSV/
+            </a>
+            <br /><span class="muted" style="font-size:0.82rem;">(Thay bằng link GitHub Pages / Netlify thật của bạn sau khi deploy)</span>
+          </td>
+        </tr>
+        <tr><th>Công cụ deploy sử dụng</th><td>GitHub Pages (hoặc Netlify) — hosting tĩnh miễn phí, hỗ trợ HTTPS</td></tr>
+      </table>
+
+      <div class="alert alert-info mt-3">
+        <strong>Hướng dẫn:</strong> Thay các chỗ <code>[...]</code> bằng thông tin thật của bạn. Sau đó đổi tên thư mục <code>701-DEMO</code> thành <code>701-MSSV</code> (vd: <code>701-2212345</code>), đẩy lên GitHub và bật Pages để có URL deploy, rồi dán vào dòng trên.
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p><strong>701-MSSV</strong> — Trang thông tin điểm danh</p>
+  </footer>
+
+  <script src="js/script.js"></script>
+</body>
+</html>

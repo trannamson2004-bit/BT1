@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bài 1 — Danh sách sản phẩm &amp; Tìm kiếm | Đề thi Web</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a href="index.html" class="brand">
+        <span class="logo-dot">W</span>
+        <span>701-MSSV<small>Đề thi Kết thúc HP — Lập trình Web</small></span>
+      </a>
+      <button class="nav-toggle" aria-label="Mở menu" aria-expanded="false">&#9776;</button>
+      <nav class="main-nav">
+        <a href="index.html">Trang chủ</a>
+        <a href="lythuyet.html">Lý thuyết</a>
+        <a href="baitap01.html">Bài 1 — Sản phẩm</a>
+        <a href="baitap02.html">Bài 2 — Form ĐK</a>
+        <a href="baitap03.html">Bài 3 — Countdown</a>
+        <a href="baitap22.html">Bài tập 22</a>
+        <a href="baitap23.html">Bài tập 23</a>
+        <a href="diemdanh.html">Điểm danh</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Liên hệ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="page-hero">
+      <span class="eyebrow">Bài tập thực hành 1 — 20 điểm</span>
+      <h1>Danh sách sản phẩm &amp; Tìm kiếm</h1>
+      <p>Dữ liệu lấy từ mảng JavaScript (6 sản phẩm). Gõ từ khóa vào ô tìm kiếm để lọc theo tên sản phẩm (không phân biệt hoa thường).</p>
+    </section>
+
+    <div class="card">
+      <div class="search-bar">
+        <input type="search" id="searchInput" class="form-control" placeholder="Nhập tên sản phẩm cần tìm… (ví dụ: laptop, điện thoại)" aria-label="Tìm kiếm sản phẩm" />
+        <button id="clearBtn" class="btn btn-secondary" type="button">Xóa</button>
+      </div>
+      <p id="resultCount" class="muted" style="font-size:0.88rem;margin-bottom:1rem;"></p>
+      <div id="productGrid" class="product-grid" aria-live="polite"></div>
+    </div>
+
+    <section class="card mt-3">
+      <h2 style="font-size:1.15rem;margin-bottom:0.75rem;color:var(--accent);">Giải thích logic tư duy lập trình</h2>
+      <ol style="margin-left:1.3rem;font-size:0.93rem;line-height:1.8;">
+        <li><strong>Xử lý input chống injection:</strong> Không dùng <code>innerHTML</code> với chuỗi do người dùng nhập. Mọi nội dung được chèn bằng <code>textContent</code> / <code>createElement</code> nên ký tự <code>&lt;script&gt;</code> hay HTML đặc biệt đều được hiển thị như văn bản thường → tránh XSS. Dữ liệu sản phẩm render cũng dùng <code>textContent</code>.</li>
+        <li><strong>Tối ưu tìm kiếm:</strong> Dùng <em>debounce</em> 200ms trên sự kiện <code>input</code> để không lọc lại sau mỗi phím gõ (giảm re-render). Chuẩn hóa cả từ khóa và tên sản phẩm bằng <code>toLowerCase()</code> + <code>trim()</code> để tìm kiếm không phân biệt hoa thường và khoảng trắng thừa. Dùng <code>includes()</code> cho tìm tương đối.</li>
+        <li><strong>Trạng thái rỗng:</strong> Nếu mảng kết quả rỗng, hiển thị thông báo “Không tìm thấy sản phẩm” thay vì để trống màn hình, và cập nhật số kết quả để người dùng biết.</li>
+        <li><strong>Responsive:</strong> Grid dùng <code>repeat(auto-fill, minmax(200px, 1fr))</code> nên tự co giãn theo độ rộng màn hình mà không cần media query phức tạp.</li>
+      </ol>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p><strong>701-MSSV</strong> — Bài 1: Danh sách sản phẩm + tìm kiếm</p>
+  </footer>
+
+  <script src="js/script.js"></script>
+  <script>
+  (function () {
+    "use strict";
+
+    /* ---------- Dữ liệu sản phẩm (mảng JavaScript, ≥5 sp) ---------- */
+    var products = [
+      { id: 1, name: "Laptop Dell Inspiron 15", price: 15990000, desc: "Laptop văn phòng, CPU i5, RAM 8GB", icon: "💻" },
+      { id: 2, name: "Điện thoại iPhone 15", price: 24990000, desc: "Smartphone cao cấp, chip A16 Bionic", icon: "📱" },
+      { id: 3, name: "Tai nghe AirPods Pro 2", price: 5990000, desc: "Tai nghe chống ồn chủ động", icon: "🎧" },
+      { id: 4, name: "Bàn phím cơ Keychron K2", price: 2190000, desc: "Bàn phím cơ không dây, switch nâu", icon: "⌨️" },
+      { id: 5, name: "Chuột Logitech MX Master 3S", price: 2490000, desc: "Chuột công thái học cho dân văn phòng", icon: "🖱️" },
+      { id: 6, name: "Màn hình LG 27 inch 4K", price: 8990000, desc: "Màn hình IPS 4K, thiết kế chân cao", icon: "🖥️" }
+    ];
+
+    var grid = document.getElementById("productGrid");
+    var searchInput = document.getElementById("searchInput");
+    var clearBtn = document.getElementById("clearBtn");
+    var resultCount = document.getElementById("resultCount");
+    var debounceTimer = null;
+
+    /* ---------- Render danh sách sản phẩm ---------- */
+    function renderProducts(list) {
+      grid.innerHTML = ""; // Xóa danh sách cũ
+
+      if (list.length === 0) {
+        var empty = document.createElement("div");
+        empty.className = "no-result";
+        empty.innerHTML = "<strong>Không tìm thấy sản phẩm nào.</strong><br>Thử từ khóa khác nhé.";
+        grid.appendChild(empty);
+        resultCount.textContent = "0 kết quả.";
+        return;
+      }
+
+      list.forEach(function (p) {
+        var card = document.createElement("div");
+        card.className = "product-card";
+
+        var thumb = document.createElement("div");
+        thumb.className = "product-thumb";
+        thumb.textContent = p.icon;
+
+        var name = document.createElement("h3");
+        name.textContent = p.name; // textContent → an toàn, không injection
+
+        var price = document.createElement("div");
+        price.className = "price";
+        price.textContent = window.formatVND(p.price);
+
+        var desc = document.createElement("p");
+        desc.className = "desc";
+        desc.textContent = p.desc;
+
+        card.appendChild(thumb);
+        card.appendChild(name);
+        card.appendChild(price);
+        card.appendChild(desc);
+        grid.appendChild(card);
+      });
+
+      resultCount.textContent = "Hiển thị " + list.length + " / " + products.length + " sản phẩm.";
+    }
+
+    /* ---------- Lọc sản phẩm theo từ khóa ---------- */
+    function filterProducts(keyword) {
+      var kw = keyword.trim().toLowerCase(); // chuẩn hóa: bỏ khoảng trắng 2 đầu, bỏ hoa
+      if (kw === "") return products;
+      return products.filter(function (p) {
+        return p.name.toLowerCase().includes(kw); // includes() tìm tương đối
+      });
+    }
+
+    /* ---------- Debounce: chỉ lọc khi người dùng ngừng gõ 200ms ---------- */
+    searchInput.addEventListener("input", function (e) {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(function () {
+        renderProducts(filterProducts(e.target.value));
+      }, 200);
+    });
+
+    clearBtn.addEventListener("click", function () {
+      searchInput.value = "";
+      renderProducts(products);
+      searchInput.focus();
+    });
+
+    // Lần đầu vào trang: hiển thị toàn bộ
+    renderProducts(products);
+  })();
+  </script>
+</body>
+</html>

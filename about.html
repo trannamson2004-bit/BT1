@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About | Đề thi Web</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a href="index.html" class="brand">
+        <span class="logo-dot">W</span>
+        <span>701-MSSV<small>Đề thi Kết thúc HP — Lập trình Web</small></span>
+      </a>
+      <button class="nav-toggle" aria-label="Mở menu" aria-expanded="false">&#9776;</button>
+      <nav class="main-nav">
+        <a href="index.html">Trang chủ</a>
+        <a href="lythuyet.html">Lý thuyết</a>
+        <a href="baitap01.html">Bài 1 — Sản phẩm</a>
+        <a href="baitap02.html">Bài 2 — Form ĐK</a>
+        <a href="baitap03.html">Bài 3 — Countdown</a>
+        <a href="baitap22.html">Bài tập 22</a>
+        <a href="baitap23.html">Bài tập 23</a>
+        <a href="diemdanh.html">Điểm danh</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Liên hệ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="page-hero">
+      <span class="eyebrow">Giới thiệu</span>
+      <h1>Về dự án này</h1>
+      <p>Website bài tập 24 — Đề thi Kết thúc học phần “Lập trình Web”, Đề số 1. Xây dựng hoàn toàn bằng HTML, CSS, JavaScript thuần, không dùng framework.</p>
+    </section>
+
+    <div class="grid-cards">
+      <div class="card">
+        <h3 style="margin-bottom:0.5rem;color:var(--accent);">Công nghệ sử dụng</h3>
+        <ul style="margin-left:1.2rem;font-size:0.92rem;line-height:1.9;">
+          <li>HTML5 (semantic tags, form validation)</li>
+          <li>CSS3 (Flexbox, Grid, biến CSS, animation, responsive)</li>
+          <li>JavaScript ES6+ (DOM, Event, LocalStorage, setInterval)</li>
+          <li>Deploy tĩnh: GitHub Pages / Netlify</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 style="margin-bottom:0.5rem;color:var(--accent);">Cấu trúc thư mục</h3>
+        <div class="code-block" style="font-size:0.8rem;">701-MSSV/
+├── index.html
+├── baitap01.html  (sản phẩm + tìm kiếm)
+├── baitap02.html  (form đăng ký)
+├── baitap03.html  (countdown 10 phút)
+├── lythuyet.html  (trả lời 4 câu lý thuyết)
+├── diemdanh.html  (thông tin điểm danh)
+├── baitap22.html  (link bài tập 22)
+├── baitap23.html  (link bài tập 23)
+├── about.html
+├── contact.html
+├── css/style.css
+├── js/script.js
+└── images/avatar.jpg</div>
+      </div>
+      <div class="card">
+        <h3 style="margin-bottom:0.5rem;color:var(--accent);">Tính năng nổi bật</h3>
+        <ul style="margin-left:1.2rem;font-size:0.92rem;line-height:1.9;">
+          <li>Menu responsive có nút hamburger trên mobile</li>
+          <li>Tìm kiếm sản phẩm có debounce, chống XSS</li>
+          <li>Validate form real-time + đo độ mạnh mật khẩu</li>
+          <li>Countdown theo wall-clock, chống trôi giờ, tránh memory leak</li>
+          <li>Active link tự động theo trang hiện tại</li>
+        </ul>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p><strong>701-MSSV</strong> — About</p>
+  </footer>
+
+  <script src="js/script.js"></script>
+</body>
+</html>

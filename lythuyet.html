@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Phần 1 — Trả lời Lý thuyết (40 điểm) | Đề thi Web</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a href="index.html" class="brand">
+        <span class="logo-dot">W</span>
+        <span>701-MSSV<small>Đề thi Kết thúc HP — Lập trình Web</small></span>
+      </a>
+      <button class="nav-toggle" aria-label="Mở menu" aria-expanded="false">&#9776;</button>
+      <nav class="main-nav">
+        <a href="index.html">Trang chủ</a>
+        <a href="lythuyet.html">Lý thuyết</a>
+        <a href="baitap01.html">Bài 1 — Sản phẩm</a>
+        <a href="baitap02.html">Bài 2 — Form ĐK</a>
+        <a href="baitap03.html">Bài 3 — Countdown</a>
+        <a href="baitap22.html">Bài tập 22</a>
+        <a href="baitap23.html">Bài tập 23</a>
+        <a href="diemdanh.html">Điểm danh</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Liên hệ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="page-hero">
+      <span class="eyebrow">Phần 1 — 40 điểm</span>
+      <h1>Trả lời các câu hỏi lý thuyết</h1>
+      <p>4 câu hỏi về CSS Position, Domain &amp; Hosting/DNS, so sánh <code>let/const/var</code>, và Event Delegation — kèm ví dụ code minh họa và thảo luận thực tế.</p>
+    </section>
+
+    <article class="card essay">
+
+      <!-- ================= CÂU 1 ================= -->
+      <h2>Câu 1 (10 điểm) — position: absolute vs position: relative</h2>
+
+      <h3>Khác biệt cốt lõi</h3>
+      <table class="compare">
+        <tr><th>Tiêu chí</th><th>position: relative</th><th>position: absolute</th></tr>
+        <tr><td>Vị trí tham chiếu</td><td>Chính vị trí ban đầu của phần tử trong luồng tài liệu (normal flow)</td><td>Tổ tiên gần nhất có position khác <code>static</code> (hoặc <code>&lt;html&gt;</code> nếu không có)</td></tr>
+        <tr><td>Chiếm không gian</td><td><strong>Vẫn chiếm</strong> chỗ trong normal flow (khoảng trống giữ nguyên)</td><td><strong>Không chiếm</strong> chỗ — bị “nhấc” ra khỏi luồng, các phần tử khác lấp đầy vị trí cũ</td></tr>
+        <tr><td>Thuộc tính top/left</td><td>Dịch chuyển phần tử so với vị trí gốc của nó</td><td>Định vị tuyệt đối so với khung chứa (containing block)</td></tr>
+        <tr><td>z-index</td><td>Có thể tạo stacking context</td><td>Tạo stacking context khi z-index khác auto</td></tr>
+      </table>
+
+      <h3>Ví dụ sử dụng trong layout responsive</h3>
+      <p><strong>Dùng relative</strong> khi cần dịch nhẹ một phần tử mà vẫn giữ chỗ (vd: hiệu ứng hover nâng card lên), hoặc — quan trọng nhất — làm <em>khung tham chiếu</em> cho các phần tử absolute bên trong:</p>
+      <div class="code-block">.product-card {
+  position: relative;   /* làm tổ tiên định vị cho badge */
+}
+.badge-sale {
+  position: absolute;   /* định vị trong card */
+  top: 12px; right: 12px;
+}</div>
+
+      <p><strong>Dùng absolute</strong> cho các phần tử “phẳng” trên giao diện: badge giảm giá, nút đóng modal, tooltip, icon góc card. Kết hợp với <code>%</code> và <code>transform: translate()</code> để tỷ lệ theo khung chứa → responsive:</p>
+      <div class="code-block">.modal-overlay {
+  position: fixed; inset: 0;          /* phủ toàn màn hình */
+  display: flex; align-items: center; justify-content: center;
+}
+.tooltip {
+  position: absolute;
+  bottom: 100%; left: 50%;
+  transform: translateX(-50%);        /* canh giữa theo % → responsive */
+}</div>
+
+      <h3>Ảnh hưởng khi deploy lên hosting &amp; tương thích thiết bị</h3>
+      <ul>
+        <li><strong>Absolute phụ thuộc vào kích thước khung chứa:</strong> Nếu dùng giá trị <code>px</code> cứng, trên màn hình nhỏ phần tử có thể tràn viền hay đè lên nội dung. Khắc phục: dùng đơn vị tương đối (<code>%</code>, <code>vw/vh</code>, <code>clamp()</code>) và media query; luôn đặt <code>position: relative</code> cho cha để không bị trôi về <code>&lt;html&gt;</code>.</li>
+        <li><strong>Không gian trống:</strong> Phần tử absolute không đỡ chiều cao cho cha → dễ bị cắt bởi <code>overflow: hidden</code> hoặc footer đè lên. Khi deploy, kiểm tra trên nhiều viewport (DevTools → Toggle device toolbar).</li>
+        <li><strong>Relative an toàn hơn cho layout chính:</strong> Nên dựng khung chính bằng Flexbox/Grid; absolute chỉ dùng cho các lớp trang trí phía trên. Cách này đảm bảo render nhất quán trên mọi trình duyệt khi host tĩnh (GitHub Pages/Netlify), vì không phụ thuộc JS hay server.</li>
+      </ul>
+
+      <!-- ================= CÂU 2 ================= -->
+      <h2>Câu 2 (10 điểm) — Đăng ký Domain, cấu hình Hosting &amp; DNS</h2>
+
+      <h3>Quy trình cho website tĩnh (HTML/CSS/JS)</h3>
+      <ol>
+        <li><strong>Đăng ký domain:</strong> Chọn nhà cung cấp (VD: Viettel, Matbao, Namecheap, GoDaddy), kiểm tra tên miền trống, thanh toán, xác thực email chủ sở hữu (ICANN).</li>
+        <li><strong>Chọn hosting:</strong> Với web tĩnh JS thuần, dùng hosting tĩnh miễn phí (xem dưới). Nếu cần server-side (PHP/Node.js) thì thuê hosting chia sẻ hoặc VPS.</li>
+        <li><strong>Upload code:</strong> Đẩy code lên host (git push, giao diện kéo-thả, hoặc FTP/SFTP). Đặt <code>index.html</code> ở thư mục gốc.</li>
+        <li><strong>Trỏ DNS:</strong> Tại trang quản trị domain, thêm bản ghi <code>A</code> (trỏ tới IP server) hoặc <code>CNAME</code> (trỏ tới tên miền của nhà hosting tĩnh). Thêm bản ghi <code>CNAME www</code> để cả <code>www</code> và không-www đều vào được.</li>
+        <li><strong>Kích hoạt HTTPS:</strong> Cài chứng chỉ SSL (Let’s Encrypt miễn phí, hoặc nhà cung cấp tự cấp). Bật redirect HTTP → HTTPS.</li>
+        <li><strong>Chờ DNS propagation:</strong> Có thể mất từ vài phút đến 48 giờ để toàn bộ các DNS server trên thế giới cập nhật.</li>
+      </ol>
+
+      <h3>Vai trò của DNS</h3>
+      <p>DNS (Domain Name System) là hệ thống phân giải <strong>tên miền dễ nhớ</strong> (vd: <code>myweb.com</code>) thành <strong>địa chỉ IP</strong> mà máy tính dùng để kết nối (vd: <code>185.199.108.153</code>). Khi người dùng gõ tên miền, trình duyệt hỏi DNS server → nhận IP → gửi request tới server hosting đó. Không có DNS thì người dùng phải nhớ địa chỉ IP số.</p>
+
+      <h3>2 công cụ deploy không cần server riêng</h3>
+      <ul>
+        <li><strong>GitHub Pages:</strong> Đẩy code lên repo GitHub, bật Pages trong Settings → trang được phục vụ tại <code>https://&lt;user&gt;.github.io/&lt;repo&gt;</code>. Tích hợp sẵn HTTPS, tùy chỉnh domain bằng CNAME. Rất phù hợp bài tập sinh viên.</li>
+        <li><strong>Netlify (hoặc Vercel):</strong> Kéo-thả thư mục chứa code hoặc kết nối GitHub repo → tự động build &amp; deploy, cấp HTTPS, CDN toàn cầu, có thể đặt domain riêng. Hỗ trợ form &amp; serverless functions nếu cần mở rộng.</li>
+      </ul>
+
+      <h3>Rủi ro bảo mật nếu cấu hình sai</h3>
+      <ul>
+        <li><strong>Không HTTPS:</strong> Dữ liệu (mật khẩu, form) truyền dưới dạng văn bản rõ, dễ bị bắt gói (MITM). Trình duyệt cảnh báo “Không bảo mật”.</li>
+        <li><strong>DNS trỏ nhầm / hết hạn:</strong> Trang bị chuyển hướng sang kẻ tấn công (domain hijacking) hoặc hiển thị nội dung lạ. Luôn khóa tài khoản nhà đăng ký và bật tự động gia hạn.</li>
+        <li><strong>File nhạy cảm lộ ra:</strong> Upload nhầm <code>.env</code>, <code>config.json</code> chứa key bí mật lên host tĩnh → ai cũng xem được. Dùng <code>.gitignore</code> và kiểm tra trước khi push.</li>
+        <li><strong>Thiếu CSP / MIME type sai:</strong> Dễ bị XSS. Thêm header <code>Content-Security-Policy</code> (Netlify cho phép qua file <code>_headers</code>).</li>
+        <li><strong>Cho phép liệt kê thư mục:</strong> Tắt directory listing để không lộ cấu trúc file.</li>
+      </ul>
+
+      <!-- ================= CÂU 3 ================= -->
+      <h2>Câu 3 (10 điểm) — So sánh var, let, const (scope &amp; hoisting)</h2>
+
+      <table class="compare">
+        <tr><th>Tiêu chí</th><th>var</th><th>let</th><th>const</th></tr>
+        <tr><td>Scope</td><td>Function scope (toàn hàm)</td><td>Block scope (trong cặp <code>{}</code>)</td><td>Block scope</td></tr>
+        <tr><td>Hoisting</td><td>Được nâng lên, khởi tạo <code>undefined</code> → truy cập trước khai báo cho kết quả <code>undefined</code> (không lỗi)</td><td colspan="2">Được nâng lên nhưng <strong>chưa khởi tạo</strong> → truy cập trước khai báo ném lỗi <code>ReferenceError</code> (Temporal Dead Zone)</td></tr>
+        <tr><td>Gán lại</td><td>Được</td><td>Được</td><td><strong>Không</strong> được gán lại (nhưng object/array vẫn sửa được thuộc tính)</td></tr>
+        <tr><td>Khai báo lại</td><td>Được (trùng tên cũng không lỗi)</td><td>Không</td><td>Không</td></tr>
+        <tr><td>Thuộc window</td><td>Có (khai báo global → <code>window.x</code>)</td><td>Không</td><td>Không</td></tr>
+      </table>
+
+      <h3>Ví dụ lỗi thường gặp (var trong vòng lặp + closure)</h3>
+      <div class="code-block">// Lỗi: cả 3 nút đều in ra 3
+for (var i = 0; i &lt; 3; i++) {
+  document.getElementById("btn" + i)
+    .addEventListener("click", function () {
+      console.log(i);   // i là function-scope, sau vòng lặp i = 3
+    });
+}
+
+// Sửa: dùng let (block scope) → mỗi vòng lặp có một i riêng
+for (let i = 0; i &lt; 3; i++) {
+  document.getElementById("btn" + i)
+    .addEventListener("click", function () {
+      console.log(i);   // in đúng 0, 1, 2
+    });
+}</div>
+
+      <p>Một lỗi khác: truy cập biến trước khi khai báo với <code>var</code> cho <code>undefined</code> âm thầm, rất khó phát hiện. Với <code>let/const</code> sẽ ném lỗi ngay → an toàn hơn.</p>
+
+      <h3>Debug bằng Chrome DevTools</h3>
+      <ol>
+        <li>Mở <strong>DevTools (F12)</strong> → tab <strong>Sources</strong>.</li>
+        <li>Đặt <em>breakpoint</em> tại dòng nghi ngờ (click số dòng). Chạy lại → code dừng lại.</li>
+        <li>Dùng <strong>Scope panel</strong> (bên phải) để xem giá trị của biến trong <em>Local</em>, <em>Closure</em>, <em>Global</em> → nhận ra <code>var</code> bị tràn scope.</li>
+        <li>Tab <strong>Console</strong> gõ trực tiếp tên biến để kiểm tra giá trị tại thời điểm dừng.</li>
+        <li>Dùng <code>debugger;</code> trong code để dừng tại chỗ, hoặc <strong>Watch expressions</strong> để theo dõi biến.</li>
+        <li>Tab <strong>Network</strong> kiểm tra file JS có tải về không (lỗi 404 hay path sai).</li>
+      </ol>
+      <div class="callout"><strong>Khuyến nghị:</strong> Luôn dùng <code>const</code> mặc định, đổi sang <code>let</code> khi cần gán lại. Tránh <code>var</code> hoàn toàn trong code mới.</div>
+
+      <!-- ================= CÂU 4 ================= -->
+      <h2>Câu 4 (10 điểm) — Event Delegation (ủy quyền sự kiện)</h2>
+
+      <h3>Khái niệm</h3>
+      <p>Event Delegation là kỹ thuật <strong>gắn một trình xử lý sự kiện duy nhất lên phần tử cha</strong>, thay vì gắn cho từng phần tử con. Nhờ cơ chế <em>event bubbling</em> (sự kiện nổi bọt từ con lên cha), khi click vào một phần tử con, sự kiện sẽ nổi lên cha và ta xác định phần tử nào được click qua <code>e.target</code> / <code>e.target.closest()</code>.</p>
+
+      <h3>Ví dụ: xử lý click trên danh sách động (dynamic list)</h3>
+      <div class="code-block">&lt;ul id="todoList"&gt;
+  &lt;li&gt;Học HTML &lt;button class="del"&gt;Xóa&lt;/button&gt;&lt;/li&gt;
+  &lt;li&gt;Học CSS  &lt;button class="del"&gt;Xóa&lt;/button&gt;&lt;/li&gt;
+  &lt;!-- phần tử thêm động sau này cũng hoạt động --&gt;
+&lt;/ul&gt;
+
+&lt;script&gt;
+// Chỉ gắn MỘT listener trên cha (ul)
+document.getElementById("todoList")
+  .addEventListener("click", function (e) {
+    // Kiểm tra phần tử thực sự được click có phải nút Xóa không
+    var btn = e.target.closest(".del");
+    if (btn) {
+      btn.closest("li").remove();   // xóa li chứa nút đó
+    }
+  });
+&lt;/script&gt;</div>
+
+      <h3>Lợi ích khi tích hợp với HTML/CSS để tối ưu hiệu suất</h3>
+      <ul>
+        <li><strong>Ít bộ nhớ hơn:</strong> 1 listener thay vì N listener → giảm bộ nhớ và thời gian khởi tạo, đặc biệt với danh sách hàng trăm nghìn phần tử.</li>
+        <li><strong>Tự động hoạt động với phần tử động:</strong> Phần tử con thêm/xóa sau khi trang tải (AJAX, DOM thao tác) <em>không cần gắn lại listener</em> — cha đã lo hết. Tránh lỗi “click không ăn” sau khi render lại.</li>
+        <li><strong>Tách biệt HTML/CSS/JS:</strong> HTML chỉ cấu trúc danh sách, CSS lo style trạng thái (vd: thêm class <code>.done</code>), JS chỉ nghe trên cha và thêm/xóa class. Dễ bảo trì, dễ thay đổi giao diện mà không đụng logic.</li>
+        <li><strong>Tránh memory leak:</strong> Không phải gỡ listener từng phần tử khi xóa khỏi DOM → giảm rò rỉ bộ nhớ trong SPA hay danh sách cập nhật liên tục.</li>
+      </ul>
+      <div class="callout"><strong>Lưu ý:</strong> Một số sự kiện không nổi bọt (vd: <code>focus</code>, <code>blur</code> — dùng <code>focusin/focusout</code> thay thế; <code>mouseenter/mouseleave</code>). Với các sự kiện đó cần xử lý riêng hoặc dùng phiên bản tương đương nổi bọt.</div>
+
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <p><strong>701-MSSV</strong> — Phần 1: Trả lời lý thuyết (40 điểm)</p>
+  </footer>
+
+  <script src="js/script.js"></script>
+</body>
+</html>

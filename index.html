@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trang chủ — Đề thi Kết thúc HP Lập trình Web</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a href="index.html" class="brand">
+        <span class="logo-dot">W</span>
+        <span>701-MSSV<small>Đề thi Kết thúc HP — Lập trình Web</small></span>
+      </a>
+      <button class="nav-toggle" aria-label="Mở menu" aria-expanded="false">&#9776;</button>
+      <nav class="main-nav">
+        <a href="index.html">Trang chủ</a>
+        <a href="lythuyet.html">Lý thuyết</a>
+        <a href="baitap01.html">Bài 1 — Sản phẩm</a>
+        <a href="baitap02.html">Bài 2 — Form ĐK</a>
+        <a href="baitap03.html">Bài 3 — Countdown</a>
+        <a href="baitap22.html">Bài tập 22</a>
+        <a href="baitap23.html">Bài tập 23</a>
+        <a href="diemdanh.html">Điểm danh</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Liên hệ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="page-hero">
+      <span class="eyebrow">Bài tập 24 — Đề số 1</span>
+      <h1>Đề thi Kết thúc học phần “Lập trình Web”</h1>
+      <p>Thời gian làm bài 150 phút — Hình thức mở. Dự án gồm 4 câu lý thuyết (40 điểm) và 3 bài tập thực hành (60 điểm), xây dựng hoàn toàn bằng HTML, CSS, JavaScript thuần.</p>
+    </section>
+
+    <h2 style="margin-bottom:1rem;font-size:1.3rem;">Phần 2 — Bài tập thực hành (60 điểm)</h2>
+    <div class="grid-cards mb-2">
+      <article class="card">
+        <span class="badge">20 điểm</span>
+        <h3 style="margin:0.6rem 0 0.4rem;">Bài 1 — Danh sách sản phẩm + Tìm kiếm</h3>
+        <p class="muted" style="font-size:0.9rem;">Hiển thị ít nhất 5 sản phẩm từ mảng JS, tìm kiếm theo tên không phân biệt hoa thường, thông báo khi không tìm thấy. Responsive bằng Grid.</p>
+        <a href="baitap01.html" class="btn btn-primary mt-2">Xem bài làm</a>
+      </article>
+      <article class="card">
+        <span class="badge">20 điểm</span>
+        <h3 style="margin:0.6rem 0 0.4rem;">Bài 2 — Form đăng ký + Validate</h3>
+        <p class="muted" style="font-size:0.9rem;">Validate tên, email, mật khẩu (≥8 ký tự, có hoa/thường/số), checkbox đồng ý. Lưu vào LocalStorage, hiển thị thông báo thành công.</p>
+        <a href="baitap02.html" class="btn btn-primary mt-2">Xem bài làm</a>
+      </article>
+      <article class="card">
+        <span class="badge">20 điểm</span>
+        <h3 style="margin:0.6rem 0 0.4rem;">Bài 3 — Đồng hồ đếm ngược 10 phút</h3>
+        <p class="muted" style="font-size:0.9rem;">Định dạng MM:SS, cập nhật real-time bằng setInterval, animation cảnh báo khi dưới 1 phút, hiện modal khi hết giờ.</p>
+        <a href="baitap03.html" class="btn btn-primary mt-2">Xem bài làm</a>
+      </article>
+    </div>
+
+    <h2 style="margin:1.5rem 0 1rem;font-size:1.3rem;">Các trang khác</h2>
+    <div class="grid-cards">
+      <article class="card">
+        <h3 style="margin-bottom:0.4rem;">Phần 1 — Trả lời Lý thuyết (40 điểm)</h3>
+        <p class="muted" style="font-size:0.9rem;">4 câu hỏi về position CSS, Domain & Hosting/DNS, so sánh let/const/var, và Event Delegation — kèm ví dụ code minh họa.</p>
+        <a href="lythuyet.html" class="btn btn-secondary mt-2">Đọc câu trả lời</a>
+      </article>
+      <article class="card">
+        <h3 style="margin-bottom:0.4rem;">Thông tin Điểm danh</h3>
+        <p class="muted" style="font-size:0.9rem;">Họ tên, MSSV, lớp, môn học, và URL Deploy của bài thi lên hosting (GitHub Pages / Netlify).</p>
+        <a href="diemdanh.html" class="btn btn-secondary mt-2">Xem điểm danh</a>
+      </article>
+      <article class="card">
+        <h3 style="margin-bottom:0.4rem;">Bài tập 22 &amp; 23</h3>
+        <p class="muted" style="font-size:0.9rem;">Link dẫn đến kết quả các bài tập đã làm trước đó theo yêu cầu bổ sung vào menu chính.</p>
+        <div style="display:flex;gap:0.5rem;margin-top:0.8rem;flex-wrap:wrap;">
+          <a href="baitap22.html" class="btn btn-secondary">Bài 22</a>
+          <a href="baitap23.html" class="btn btn-secondary">Bài 23</a>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p><strong>701-MSSV</strong> — Học phần Lập trình Web · Đề thi số 1 · Thư mục nộp: <code>701-MSSV/</code></p>
+  </footer>
+
+  <script src="js/script.js"></script>
+</body>
+</html>

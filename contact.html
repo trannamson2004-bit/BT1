@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Liên hệ | Đề thi Web</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a href="index.html" class="brand">
+        <span class="logo-dot">W</span>
+        <span>701-MSSV<small>Đề thi Kết thúc HP — Lập trình Web</small></span>
+      </a>
+      <button class="nav-toggle" aria-label="Mở menu" aria-expanded="false">&#9776;</button>
+      <nav class="main-nav">
+        <a href="index.html">Trang chủ</a>
+        <a href="lythuyet.html">Lý thuyết</a>
+        <a href="baitap01.html">Bài 1 — Sản phẩm</a>
+        <a href="baitap02.html">Bài 2 — Form ĐK</a>
+        <a href="baitap03.html">Bài 3 — Countdown</a>
+        <a href="baitap22.html">Bài tập 22</a>
+        <a href="baitap23.html">Bài tập 23</a>
+        <a href="diemdanh.html">Điểm danh</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Liên hệ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="page-hero">
+      <span class="eyebrow">Liên hệ</span>
+      <h1>Gửi tin nhắn cho sinh viên</h1>
+      <p>Điền form dưới đây để gửi phản hồi. (Minh họa — form chạy hoàn toàn phía client, không gửi đi đâu.)</p>
+    </section>
+
+    <div class="card" style="max-width:560px;margin:0 auto;">
+      <form id="contactForm" novalidate>
+        <div class="form-group">
+          <label for="cName">Họ tên</label>
+          <input type="text" id="cName" class="form-control" placeholder="Nguyễn Văn A" required />
+          <div class="error-msg" id="cNameErr"></div>
+        </div>
+        <div class="form-group">
+          <label for="cEmail">Email</label>
+          <input type="email" id="cEmail" class="form-control" placeholder="you@example.com" required />
+          <div class="error-msg" id="cEmailErr"></div>
+        </div>
+        <div class="form-group">
+          <label for="cMsg">Nội dung</label>
+          <textarea id="cMsg" class="form-control" rows="5" placeholder="Nhập nội dung tin nhắn…" required></textarea>
+          <div class="error-msg" id="cMsgErr"></div>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;">Gửi tin nhắn</button>
+        <div id="cResult"></div>
+      </form>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p><strong>701-MSSV</strong> — Liên hệ · Email: <code>mssv@student.edu.vn</code></p>
+  </footer>
+
+  <script src="js/script.js"></script>
+  <script>
+  (function () {
+    var form = document.getElementById("contactForm");
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var name = document.getElementById("cName").value.trim();
+      var email = document.getElementById("cEmail").value.trim();
+      var msg = document.getElementById("cMsg").value.trim();
+      var ok = true;
+      document.getElementById("cNameErr").textContent = name ? "" : "Vui lòng nhập họ tên."; ok = ok && !!name;
+      var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      document.getElementById("cEmailErr").textContent = re.test(email) ? "" : "Email không hợp lệ."; ok = ok && re.test(email);
+      document.getElementById("cMsgErr").textContent = msg ? "" : "Vui lòng nhập nội dung."; ok = ok && !!msg;
+      if (!ok) return;
+      document.getElementById("cResult").innerHTML = '<div class="alert alert-success">Cảm ơn ' + window.escapeHTML(name) + '! Tin nhắn đã được ghi nhận (minh họa phía client).</div>';
+      form.reset();
+    });
+  })();
+  </script>
+</body>
+</html>

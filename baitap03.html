@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bài 3 — Đồng hồ đếm ngược 10 phút | Đề thi Web</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a href="index.html" class="brand">
+        <span class="logo-dot">W</span>
+        <span>701-MSSV<small>Đề thi Kết thúc HP — Lập trình Web</small></span>
+      </a>
+      <button class="nav-toggle" aria-label="Mở menu" aria-expanded="false">&#9776;</button>
+      <nav class="main-nav">
+        <a href="index.html">Trang chủ</a>
+        <a href="lythuyet.html">Lý thuyết</a>
+        <a href="baitap01.html">Bài 1 — Sản phẩm</a>
+        <a href="baitap02.html">Bài 2 — Form ĐK</a>
+        <a href="baitap03.html">Bài 3 — Countdown</a>
+        <a href="baitap22.html">Bài tập 22</a>
+        <a href="baitap23.html">Bài tập 23</a>
+        <a href="diemdanh.html">Điểm danh</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Liên hệ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="page-hero">
+      <span class="eyebrow">Bài tập thực hành 3 — 20 điểm</span>
+      <h1>Đồng hồ đếm ngược 10 phút</h1>
+      <p>Hiển thị thời gian còn lại dạng <strong>MM:SS</strong>, cập nhật real-time. Khi dưới 1 phút đồng hồ chuyển đỏ và nhấp nháy cảnh báo. Hết giờ sẽ hiện modal thông báo.</p>
+    </section>
+
+    <div class="card timer-wrap">
+      <div id="timerDisplay" class="timer-display">10:00</div>
+      <div class="progress-track"><div id="progressFill" class="progress-fill"></div></div>
+      <p id="timerStatus" class="muted mt-2" style="font-size:0.9rem;">Nhấn “Bắt đầu” để chạy đồng hồ.</p>
+      <div class="timer-controls">
+        <button id="startBtn" class="btn btn-primary">Bắt đầu</button>
+        <button id="pauseBtn" class="btn btn-secondary" disabled>Tạm dừng</button>
+        <button id="resetBtn" class="btn btn-accent2">Đặt lại</button>
+      </div>
+    </div>
+
+    <!-- Modal hết giờ -->
+    <div id="timeUpModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-box">
+        <div style="font-size:3rem;margin-bottom:0.5rem;">⏰</div>
+        <h2 id="modalTitle" style="margin-bottom:0.5rem;">Hết giờ!</h2>
+        <p class="muted" style="margin-bottom:1.25rem;">10 phút đã trôi qua. Đồng hồ đã tự động dừng.</p>
+        <button id="closeModalBtn" class="btn btn-primary">Đóng</button>
+      </div>
+    </div>
+
+    <section class="card mt-3">
+      <h2 style="font-size:1.15rem;margin-bottom:0.75rem;color:var(--accent);">Giải thích logic tư duy lập trình</h2>
+      <ol style="margin-left:1.3rem;font-size:0.93rem;line-height:1.8;">
+        <li><strong>Tránh memory leak với interval:</strong> Mọi <code>setInterval</code> đều được lưu vào biến và gọi <code>clearInterval()</code> ngay khi hết giờ / tạm dừng / reset / đóng trang (<code>beforeunload</code>). Không bao giờ tạo interval mới mà không hủy cái cũ (tránh nhiều interval chạy song song). State machine <code>idle | running | paused | done</code> chặn bấm “Bắt đầu” nhiều lần.</li>
+        <li><strong>Đếm theo thời gian thực (wall-clock), không đếm tick:</strong> Lưu <code>startTs = Date.now()</code>, mỗi giây tính <code>remaining = TOTAL - (Date.now() - startTs)</code>. Cách này tự sửa sai khi tab bị nền hóa (trình duyệt làm chậm setInterval) — không bị lệch giờ như cách trừ 1 mỗi tick.</li>
+        <li><strong>Animation cảnh báo:</strong> Khi <code>remaining &lt; 60s</code>, thêm class <code>.urgent</code> (đỏ + pulse). Dùng CSS animation thuần nên mượt và không tốn CPU của JS.</li>
+        <li><strong>Tích hợp Domain/Hosting &amp; đồng bộ server:</strong> Khi deploy, giờ client có thể sai. Để chính xác, lần đầu tải trang gọi API lấy <code>Date.now()</code> của server (hoặc đọc header <code>Date</code> từ response) để tính độ lệch <code>offset = serverTime - clientTime</code>, rồi dùng <code>Date.now() + offset</code> trong công thức. Trên hosting tĩnh (GitHub Pages/Netlify) không có server riêng, có thể dùng một endpoint công khai như <code>https://worldtimeapi.org</code> hoặc tính đến lúc thi không cần đồng bộ.</li>
+      </ol>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p><strong>701-MSSV</strong> — Bài 3: Đồng hồ đếm ngược 10 phút</p>
+  </footer>
+
+  <script src="js/script.js"></script>
+  <script>
+  (function () {
+    "use strict";
+
+    var TOTAL_MS = 10 * 60 * 1000; // 10 phút
+    var display = document.getElementById("timerDisplay");
+    var progressFill = document.getElementById("progressFill");
+    var statusEl = document.getElementById("timerStatus");
+    var startBtn = document.getElementById("startBtn");
+    var pauseBtn = document.getElementById("pauseBtn");
+    var resetBtn = document.getElementById("resetBtn");
+    var modal = document.getElementById("timeUpModal");
+    var closeModalBtn = document.getElementById("closeModalBtn");
+
+    var intervalId = null;      // lưu handle interval để clear
+    var state = "idle";          // idle | running | paused | done
+    var startTs = 0;             // mốc thời gian bắt đầu (wall-clock)
+    var remainingMs = TOTAL_MS;  // thời gian còn lại (dùng khi pause)
+
+    /* ---------- Định dạng MM:SS ---------- */
+    function format(ms) {
+      var totalSec = Math.max(0, Math.ceil(ms / 1000));
+      var m = Math.floor(totalSec / 60);
+      var s = totalSec % 60;
+      return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+    }
+
+    /* ---------- Cập nhật giao diện ---------- */
+    function render() {
+      display.textContent = format(remainingMs);
+      var pct = Math.max(0, (remainingMs / TOTAL_MS) * 100);
+      progressFill.style.width = pct + "%";
+      // Cảnh báo khi dưới 1 phút
+      if (remainingMs <= 60 * 1000 && remainingMs > 0) {
+        display.classList.add("urgent");
+      } else {
+        display.classList.remove("urgent");
+      }
+    }
+
+    /* ---------- Tick mỗi giây ---------- */
+    function tick() {
+      remainingMs = TOTAL_MS - (Date.now() - startTs); // wall-clock, không trừ tay
+      if (remainingMs <= 0) {
+        remainingMs = 0;
+        render();
+        stopTimer();
+        state = "done";
+        syncButtons();
+        statusEl.textContent = "Đã hết giờ.";
+        modal.classList.add("show"); // hiện modal
+        return;
+      }
+      render();
+    }
+
+    function startTimer() {
+      if (state === "running") return; // chặn chạy nhiều interval
+      // Nếu đang paused, tiếp tục từ remainingMs; nếu idle/reset, bắt đầu mới
+      startTs = Date.now() - (TOTAL_MS - remainingMs);
+      intervalId = setInterval(tick, 250); // tick 250ms cho mượt, vẫn tính theo wall-clock
+      state = "running";
+      statusEl.textContent = "Đang đếm ngược…";
+      syncButtons();
+    }
+
+    function pauseTimer() {
+      if (state !== "running") return;
+      stopTimer();
+      remainingMs = TOTAL_MS - (Date.now() - startTs);
+      state = "paused";
+      statusEl.textContent = "Đã tạm dừng. Nhấn Bắt đầu để tiếp tục.";
+      syncButtons();
+    }
+
+    function stopTimer() {
+      if (intervalId !== null) {
+        clearInterval(intervalId); // QUAN TRỌNG: tránh memory leak
+        intervalId = null;
+      }
+    }
+
+    function resetTimer() {
+      stopTimer();
+      remainingMs = TOTAL_MS;
+      state = "idle";
+      render();
+      statusEl.textContent = "Nhấn “Bắt đầu” để chạy đồng hồ.";
+      syncButtons();
+    }
+
+    function syncButtons() {
+      startBtn.disabled = (state === "running");
+      pauseBtn.disabled = (state !== "running");
+      startBtn.textContent = (state === "paused") ? "Tiếp tục" : "Bắt đầu";
+    }
+
+    /* ---------- Sự kiện ---------- */
+    startBtn.addEventListener("click", startTimer);
+    pauseBtn.addEventListener("click", pauseTimer);
+    resetBtn.addEventListener("click", resetTimer);
+    closeModalBtn.addEventListener("click", function () { modal.classList.remove("show"); });
+    modal.addEventListener("click", function (e) {
+      if (e.target === modal) modal.classList.remove("show");
+    });
+
+    // Dọn dẹp khi đóng tab — tránh interval rò rỉ
+    window.addEventListener("beforeunload", stopTimer);
+
+    render();
+    syncButtons();
+  })();
+  </script>
+</body>
+</html>
